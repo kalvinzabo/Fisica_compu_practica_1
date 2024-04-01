@@ -134,19 +134,19 @@ def calculo_momento_angular_total(pos, vel, masas=masas_r):
     return momento_angular_total
 
 #Función de cálculo del periodo.
-def calculo_periodo_orbital(periodos, pos, i, h):
-    posiciones_iniciales = pos[0]
+def calculo_periodo_orbital(it_number, periodos=periodos, pos_global=pos, step=h):
+    posiciones_iniciales = pos_global[0]
     for j in range(1,len(posiciones_iniciales)):
-        if np.linalg.norm(pos[i][j] - posiciones_iniciales[j]) < 0.1 and periodos[j] == 0 and (pos[i][j][0] and pos[i][j][1])>0:
-            periodos[j] = i * h
+        if np.linalg.norm(pos_global[it_number][j] - posiciones_iniciales[j]) < 0.1 and periodos[j] == 0 and (pos_global[it_number][j][0] and pos_global[it_number][j][1])>0:
+            periodos[j] = it_number * step
     return periodos
 
 #Introduzco las posiciones, velocidades, aceleraciones, la energía y el momento angular iniciales en los arrays que dependen del tiempo
 pos[0] = distancias_r
 vel[0] = velocidades_r
 a[0] = calculo_aceleracion()
-energia_total[0] = calculo_energia_total(pos=pos[0], vel=vel[0])
-momento_angular_total[0] = calculo_momento_angular_total(pos=pos[0], vel=vel[0])
+energia_total[0] = calculo_energia_total(pos[0], vel[0])
+momento_angular_total[0] = calculo_momento_angular_total(pos[0], vel[0])
 
 #Algoritmo de Verlet
 for t in range (iterations-1):
@@ -156,12 +156,12 @@ for t in range (iterations-1):
     vel[t+1] = w + h/2*a[t+1]
 
     #Calculo la energía y el momento angular del sistema en la nueva posición.
-    energia_total[t+1] = calculo_energia_total(pos=pos[t+1], vel=vel[t+1])
-    momento_angular_total[t+1] = calculo_momento_angular_total(pos=pos[t+1], vel=vel[t+1])
+    energia_total[t+1] = calculo_energia_total(pos[t+1], vel[t+1])
+    momento_angular_total[t+1] = calculo_momento_angular_total(pos[t+1], vel[t+1])
 
     #Compruebo si algún planeta ha completado su orbita cuando llevo suficientes iteraciones
     if t > 100:
-        periodos = calculo_periodo_orbital(periodos=periodos, pos=pos, i=t+1, h=h)
+        periodos = calculo_periodo_orbital(t+1)
 
 
     if t % 10000 == 0:
