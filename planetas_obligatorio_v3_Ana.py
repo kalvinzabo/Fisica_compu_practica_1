@@ -90,7 +90,7 @@ t_limit = 6000
 iterations=int(t_limit//h)
 
 cuerpos = len(masas)
-coordenadas = len(distancias[0]) 
+coordenadas = len(distancias[0])
 
 t = np.linspace(t0,t_limit,iterations)
 pos = np.zeros((iterations, cuerpos, coordenadas))
@@ -105,9 +105,7 @@ periodos = np.zeros(cuerpos)
 def calculo_aceleracion (mass=masas_r, dis=distancias_r):
     aceleraciones = np.zeros((9,3))
     len_mass = len(mass)
-    for i in range(len_mass):
-        if i == 0:
-            continue
+    for i in range(1, len_mass):
         for j in range(len_mass):
             if j == i:
                 continue
