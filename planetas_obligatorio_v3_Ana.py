@@ -204,8 +204,3 @@ np.save('resultados/ac_global.npy', a)
 # ax.legend()
 
 # plt.show()
-    
-#Cosas por implementar:
-    #plot energia total y momento angular total en funcion del tiempo
-    #plot orbitas
-    #plot modelo geocentrico #le resto a las posiciones originales la posicion de la tierra y vuelvo a hacer el bucle
