@@ -173,19 +173,19 @@ periodos_r = periodos*(d_tierra[0]**3/(G*M_sol))**0.5*1.15741e-5
 for i in range(cuerpos):
     print('Para el cuerpo', i, ', el periodo medido es', periodos_r[i],'días. Podemos compararlo con su periodo real que es', T_teo[i] ,'días. Su error relativo es', abs(periodos_r[i]-T_teo[i])/T_teo[i]*100, '%.')
 
-np.save('resultados_grande_1/pos_global.npy', pos)
-np.save('resultados_grande_1/vel_global.npy', vel)
-np.save('resultados_grande_1/ac_global.npy', a)
+np.save('resultados/pos_global.npy', pos)
+np.save('resultados/vel_global.npy', vel)
+np.save('resultados/ac_global.npy', a)
 
-for i in range(len(masas)):
+# for i in range(len(masas)):
 
-    np.save(f'resultados_grande_1/planeta_{i}_pos.npy', pos[:,i,:])
-    np.save(f'resultados_grande_1/planeta_{i}_vel.npy', vel[:,i,:])
-    np.save(f'resultados_grande_1/planeta_{i}_ac.npy', a[:,i,:])
+#     np.save(f'resultados/planeta_{i}_pos.npy', pos[:,i,:])
+#     np.save(f'resultados/planeta_{i}_vel.npy', vel[:,i,:])
+#     np.save(f'resultados/planeta_{i}_ac.npy', a[:,i,:])
     
-    np.savetxt(f'resultados_grande_1/planeta_{i}_pos.txt', pos[:,i,:], fmt='%.4f')
-    np.savetxt(f'resultados_grande_1/planeta_{i}_vel.txt', vel[:,i,:], fmt='%.4f')
-    np.savetxt(f'resultados_grande_1/planeta_{i}_ac.txt', a[:,i,:], fmt='%.4f')
+#     np.savetxt(f'resultados/planeta_{i}_pos.txt', pos[:,i,:], fmt='%.4f')
+#     np.savetxt(f'resultados/planeta_{i}_vel.txt', vel[:,i,:], fmt='%.4f')
+#     np.savetxt(f'resultados/planeta_{i}_ac.txt', a[:,i,:], fmt='%.4f')
     
     # np.savetxt(f'resultados/planeta_{i}_pos.txt', pos[:,i,:])
     # np.savetxt(f'resultados/planeta_{i}_vel.txt', vel[:,i,:])
