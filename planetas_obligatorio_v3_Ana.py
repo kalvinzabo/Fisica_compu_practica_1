@@ -139,6 +139,7 @@ def calculo_periodo_orbital(it_number, periodos=periodos, pos_global=pos, step=h
         if periodos[j] != 0:
             continue
         if np.linalg.norm(pos_global[it_number][j] - init_positions[j]) < 0.1 and pos_global[it_number][j][1]>0:
+            print(f'El cuerpo {j} ha completado una órbita en {it_number} iteraciones (aprox. {it_number*step*58.1} días)')
             periodos[j] = it_number * step
     return periodos
 
