@@ -155,7 +155,6 @@ def calculo_periodo_orbital(it_number, periodos=periodos, pos_global=pos, step=h
             continue
         
         last_distance_to_start[j] = current_j_distance_to_start     #after entering the first case (or none in the first half of the orbit), update last distance
-    return periodos
 
 #Introduzco las posiciones, velocidades, aceleraciones, la energía y el momento angular iniciales en los arrays que dependen del tiempo
 pos[0] = distancias_r
@@ -176,7 +175,7 @@ for t in range (iterations-1):
     momento_angular_total[t+1] = calculo_momento_angular_total(pos[t+1], vel[t+1])
 
     #Compruebo si algún planeta ha completado su órbita.
-    periodos = calculo_periodo_orbital(t+1)
+    calculo_periodo_orbital(t+1)
 
 
     if t % 10000 == 0:
