@@ -134,10 +134,11 @@ def calculo_momento_angular_total(pos, vel, masas=masas_r):
     return momento_angular_total
 
 #Función de cálculo del periodo.
-def calculo_periodo_orbital(it_number, periodos=periodos, pos_global=pos, step=h):
-    posiciones_iniciales = pos_global[0]
-    for j in range(1,len(posiciones_iniciales)):
-        if np.linalg.norm(pos_global[it_number][j] - posiciones_iniciales[j]) < 0.1 and periodos[j] == 0 and (pos_global[it_number][j][0] and pos_global[it_number][j][1])>0:
+def calculo_periodo_orbital(it_number, periodos=periodos, pos_global=pos, step=h, init_positions=distancias_r):
+    for j in range(1,len(init_positions)):
+        if periodos[j] != 0:
+            continue
+        if np.linalg.norm(pos_global[it_number][j] - init_positions[j]) < 0.1 and pos_global[it_number][j][1]>0:
             periodos[j] = it_number * step
     return periodos
 
