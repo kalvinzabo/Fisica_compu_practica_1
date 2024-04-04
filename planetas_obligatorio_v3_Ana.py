@@ -9,6 +9,7 @@
 #Librerias
 import numpy as np
 import matplotlib.pyplot as plt
+from resultados import plot_test_orbits
 
 # plt.rcParams['text.usetex'] = True
 
@@ -193,6 +194,8 @@ np.save('resultados/ac_global.npy', a)
 np.save('resultados/E_global.npy', energia_total)
 np.save('resultados/L_global.npy', momento_angular_total)
 np.save('resultados/t_global.npy', t)
+
+plot_test_orbits.myplot()
 
 # for i in range(len(masas)):
 
