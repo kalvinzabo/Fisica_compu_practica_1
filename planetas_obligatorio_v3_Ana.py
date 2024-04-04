@@ -99,8 +99,8 @@ a = np.zeros((iterations, cuerpos, coordenadas))
 energia_total = np.zeros((iterations))
 momento_angular_total = np.zeros((iterations, coordenadas))
 periodos = np.zeros(cuerpos)
-are_distances_decreasing = [False]*9    #list of flags to check if each planet has started approaching its starting point (used to calculate the orbit period)
-last_distance_to_start = [0.]*9     #this one holds the last distance so we can check if it is increasing or decreasing
+is_r_disminuyendo = [False]*9    #list of flags to check if each planet has started approaching its starting point (used to calculate the orbit period)
+r_anteriores = [0.]*9     #this one holds the last distance so we can check if it is increasing or decreasing
 
 #Bloque de funciones.
 #Función de cálculo de aceleraciones. Las calculamos de manera más sencilla debido al reescalamiento que hemos hecho a las masas, distancias y tiempos
@@ -136,25 +136,25 @@ def calculo_momento_angular_total(pos, vel, masas=masas_r):
     return momento_angular_total
 
 #Función de cálculo del periodo. Asigna un periodo a un cuerpo si su distancia con su posición inicial estaba disminuyendo y empieza de nuevo a aumentar.
-def calculo_periodo_orbital(it_number, periodos=periodos, pos_global=pos, step=h, init_positions=distancias_r):
-    for j in range(1,len(init_positions)):
+def calculo_periodo_orbital(num_iteracion, periodos=periodos, pos_global=pos, step=h, posiciones_iniciales=distancias_r):
+    for j in range(1,len(posiciones_iniciales)):
         if periodos[j] != 0:
             continue
 
-        current_j_distance_to_start = np.linalg.norm(pos_global[it_number][j] - init_positions[j])
+        r = np.linalg.norm(pos_global[num_iteracion][j] - posiciones_iniciales[j])
         
-        if last_distance_to_start[j] > current_j_distance_to_start:     #distance is decreasing
-            are_distances_decreasing[j] = True
+        if r_anteriores[j] > r:     #distance is decreasing
+            is_r_disminuyendo[j] = True
         
-        elif last_distance_to_start[j] == current_j_distance_to_start:  #distance did not change (error)
+        elif r_anteriores[j] == r:  #distance did not change (error)
             raise Exception(f"The distance to the starting point of planet {j} is not changing. The planet is not moving or the distance is being updated incorrectly.")
         
-        elif are_distances_decreasing[j]:   #distance is increasing (is not decreasing nor equal) and was decreasing until now.
-            print(f'El cuerpo {j} ha completado una órbita en {it_number} iteraciones (aprox. {it_number*step*58.1} días)')
-            periodos[j] = it_number * step
+        elif is_r_disminuyendo[j]:   #distance is increasing (is not decreasing nor equal) and was decreasing until now.
+            print(f'El cuerpo {j} ha completado una órbita en {num_iteracion} iteraciones (aprox. {num_iteracion*step*58.1} días)')
+            periodos[j] = num_iteracion * step
             continue
         
-        last_distance_to_start[j] = current_j_distance_to_start     #after entering the first case (or none in the first half of the orbit), update last distance
+        r_anteriores[j] = r     #after entering the first case (or none in the first half of the orbit), update last distance
 
 #Introduzco las posiciones, velocidades, aceleraciones, la energía y el momento angular iniciales en los arrays que dependen del tiempo
 pos[0] = distancias_r
