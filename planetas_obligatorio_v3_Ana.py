@@ -86,7 +86,7 @@ T_teo = np.array([T_sol, T_mercurio, T_venus, T_tierra, T_marte, T_jupiter, T_sa
 
 #Variables necesarias para el algoritmo y el ploteo
 h = 0.01
-t_limit = 6000
+t_limit = 1100
 iterations=int(t_limit//h)
 
 cuerpos = len(masas)
