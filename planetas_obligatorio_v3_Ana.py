@@ -190,6 +190,9 @@ for i in range(cuerpos):
 np.save('resultados/pos_global.npy', pos)
 np.save('resultados/vel_global.npy', vel)
 np.save('resultados/ac_global.npy', a)
+np.save('resultados/E_global.npy', energia_total)
+np.save('resultados/L_global.npy', momento_angular_total)
+np.save('resultados/t_global.npy', t)
 
 # for i in range(len(masas)):
 
