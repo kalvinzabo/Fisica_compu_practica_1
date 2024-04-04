@@ -13,7 +13,7 @@ def myplot():
     fig, axs = plt.subplots(ncols=2, figsize=(10, 10))
 
     planet_names = ['Sol', 'Mercurio', 'Venus', 'Tierra', 'Marte']
-    for i in range(0, 5):
+    for i in range(1, 5):
         axs[0].plot(pos[:, i, 0], pos[:, i, 1], label=f'{planet_names[i]}')
         
     planet_names_ext = ['Júpiter','Saturno', 'Urano', 'Neptuno']
@@ -24,6 +24,7 @@ def myplot():
     axs[1].set_title('Órbita de los planetas exteriores respecto al Sol')
 
     for ax in axs:
+        ax.scatter(0, 0, color='black', label='Sol')
         ax.set_aspect('equal')
         ax.set_xlabel('Posición X (UA)')
         ax.set_ylabel('Posición Y (UA)')
