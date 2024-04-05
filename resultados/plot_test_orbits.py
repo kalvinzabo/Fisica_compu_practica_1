@@ -33,4 +33,8 @@ def mainplot():
         ax.legend()
 
     plt.show()
+
+global_pos = np.load('pos_global.npy')
+pos = global_pos.copy()
+pos -= pos[:, 3, np.newaxis]
 mainplot()
