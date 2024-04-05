@@ -6,12 +6,14 @@ import numpy as np
 
 def myplot():
     pos = np.load('resultados/pos_global.npy')
-    mainplot()
+    mainplot(pos)
 
-def mainplot():
+def mainplot(pos):
     # vel = np.load('vel_global')
     # a = np.load('ac_global')
 
+    pos -= pos[:, 3, np.newaxis]    #comment this line for heliocentric model
+    
     fig, axs = plt.subplots(ncols=2, figsize=(10, 10))
 
     planet_names = ['Sol', 'Mercurio', 'Venus', 'Tierra', 'Marte']
@@ -34,7 +36,6 @@ def mainplot():
 
     plt.show()
 
-global_pos = np.load('pos_global.npy')
-pos = global_pos.copy()
-pos -= pos[:, 3, np.newaxis]
-mainplot()
+if __name__ == '__main__':
+    pos = np.load('pos_global.npy')
+    mainplot(pos)
