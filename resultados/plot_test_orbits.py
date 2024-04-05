@@ -6,7 +6,9 @@ import numpy as np
 
 def myplot():
     pos = np.load('resultados/pos_global.npy')
+    mainplot()
 
+def mainplot():
     # vel = np.load('vel_global')
     # a = np.load('ac_global')
 
@@ -31,3 +33,4 @@ def myplot():
         ax.legend()
 
     plt.show()
+mainplot()
