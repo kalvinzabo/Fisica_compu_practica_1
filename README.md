@@ -3,5 +3,4 @@
 
  **Cosas por implementar:**
 - plot energia total y momento angular total en funcion del tiempo
-- plot orbitas
-- plot modelo geocentrico (restar a las posiciones originales la posicion de la tierra y volver a hacer el bucle)
+- hacer mas fancy el plot del aphelion test
