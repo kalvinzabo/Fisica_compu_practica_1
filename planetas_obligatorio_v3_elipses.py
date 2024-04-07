@@ -201,7 +201,7 @@ maximas_distancias = c*maximas_distancias_r
 for i in range(1,cuerpos):
     epsilons[i] = (maximas_distancias_r[i] - perihelios_r[i][0])/(maximas_distancias_r[i] + perihelios_r[i][0])
 
-for i in range(cuerpos):
+for i in range(1,cuerpos):
     print('Para el cuerpo', i, ', el periodo medido es', periodos_r[i],'días. Podemos compararlo con su periodo real que es', T_teo[i] ,'días. Su error relativo es', abs(periodos_r[i]-T_teo[i])/T_teo[i]*100, '%.')
     print('Para el cuerpo', i, ', la excentricidad medida es', epsilons[i],'. Podemos compararla con su excentricidad real que es', epsilons_teo[i] ,'. Su error relativo es', abs(epsilons[i]-epsilons_teo[i])/epsilons_teo[i]*100, '%.')
 

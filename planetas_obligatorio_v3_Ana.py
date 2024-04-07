@@ -185,7 +185,7 @@ for t in range (iterations-1):
 #Reescalamos los periodos calculados a los 
 periodos_r = periodos*(d_tierra[0]**3/(G*M_sol))**0.5*1.15741e-5
 
-for i in range(cuerpos):
+for i in range(1,cuerpos):
     print('Para el cuerpo', i, ', el periodo medido es', periodos_r[i],'días. Podemos compararlo con su periodo real que es', T_teo[i] ,'días. Su error relativo es', abs(periodos_r[i]-T_teo[i])/T_teo[i]*100, '%.')
 
 np.save('resultados/pos_global.npy', pos)
