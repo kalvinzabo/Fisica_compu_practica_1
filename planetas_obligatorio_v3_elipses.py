@@ -179,8 +179,8 @@ def calculo_periodo_orbital(num_iteracion, periodos=periodos, pos_global=pos, st
 pos[0] = perihelios_r
 vel[0] = velocidades_max_r
 a[0] = calculo_aceleracion()
-energia_total[0] = calculo_energia_total(pos[0], vel[0])
-momento_angular_total[0] = calculo_momento_angular_total(pos[0], vel[0])
+energia_total[0] = calculo_energia_total(0, pos[0], vel[0])
+momento_angular_total[0] = calculo_momento_angular_total(0, pos[0], vel[0])
 
 #Algoritmo de Verlet
 for t in range (iterations-1):
@@ -190,8 +190,8 @@ for t in range (iterations-1):
     vel[t+1] = w + h/2*a[t+1]
 
     #Calculo la energía y el momento angular del sistema en la nueva posición.
-    energia_total[t+1] = calculo_energia_total(pos[t+1], vel[t+1])
-    momento_angular_total[t+1] = calculo_momento_angular_total(pos[t+1], vel[t+1])
+    energia_total[t+1] = calculo_energia_total(t+1, pos[t+1], vel[t+1])
+    momento_angular_total[t+1] = calculo_momento_angular_total(t+1, pos[t+1], vel[t+1])
 
     #Compruebo si algún planeta ha completado su órbita.
     calculo_periodo_orbital(t+1)
