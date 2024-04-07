@@ -99,6 +99,7 @@ pos = np.zeros((iterations, cuerpos, coordenadas))
 vel = np.zeros((iterations, cuerpos, coordenadas))
 a = np.zeros((iterations, cuerpos, coordenadas))
 energia_total = np.zeros((iterations))
+energias_cuerpos = np.zeros((iterations,cuerpos))
 momento_angular_total = np.zeros((iterations, coordenadas))
 periodos = np.zeros(cuerpos)
 is_r_disminuyendo = [False]*9    #list of flags to check if each planet has started approaching its starting point (used to calculate the orbit period)
@@ -120,7 +121,7 @@ def calculo_aceleracion (mass=masas_r, dis=perihelios_r):
     return aceleraciones
 
 #Función de cálculo de energía. Calculamos la E cinética y la E potencial y las sumamos
-def calculo_energia_total(pos, vel, masas=masas_r):
+def calculo_energia_total(iteracion, pos, vel, masas=masas_r, energias_cuerpos=energias_cuerpos):
     energia_total = 0
     for i in range(len(masas)):
         energia_cinetica = 0.5 * masas[i] * np.linalg.norm(vel[i])**2
@@ -130,7 +131,9 @@ def calculo_energia_total(pos, vel, masas=masas_r):
                 continue
             r = np.linalg.norm(pos[i] - pos[j])
             energia_potencial -= masas[i] * masas[j] / r
-        energia_total += energia_cinetica + energia_potencial
+        energia_cuerpo = energia_cinetica + energia_potencial
+        energia_total += energia_cuerpo
+        energias_cuerpos[iteracion, i] = energia_cuerpo
     return energia_total
 
 #Función de cálculo del momento angular total. Calculamos L = m (r x v)
