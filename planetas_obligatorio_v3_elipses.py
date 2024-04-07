@@ -105,6 +105,7 @@ is_r_disminuyendo = [False]*9    #list of flags to check if each planet has star
 r_anteriores = [0.]*9     #this one holds the last distance so we can check if it is increasing or decreasing
 maximas_distancias_r = np.zeros(cuerpos)
 epsilons = np.zeros(cuerpos)
+epsilons_energia = np.zeros(cuerpos)
 
 #Bloque de funciones.
 #Función de cálculo de aceleraciones. Las calculamos de manera más sencilla debido al reescalamiento que hemos hecho a las masas, distancias y tiempos
@@ -197,11 +198,16 @@ for t in range (iterations-1):
 periodos_r = periodos*(c**3/(G*M_sol))**0.5*1.15741e-5
 maximas_distancias = c*maximas_distancias_r
 
-#Calculamos las excentricidades predichas.
+#Calculamos las excentricidades predichas según la forma de nuestra órbita.
 for i in range(1,cuerpos):
     epsilons[i] = (maximas_distancias_r[i] - perihelios_r[i][0])/(maximas_distancias_r[i] + perihelios_r[i][0])
 
+#Calculamos las excentricidades en relación con la energía
 for i in range(1,cuerpos):
+    energia_total_real = energia_total * (G*(M_sol)**2)/c
+    momento_angular_total_real = momento_angular_total * M_sol * np.sqrt(c*G*M_sol)
+    epsilons_energia[i] = np.sqrt(1+(2*energia_total_real*(momento_angular_total_real)**2)/(G**2*(M_sol)**2*(masas[i])**3))
+
     print('Para el cuerpo', i, ', el periodo medido es', periodos_r[i],'días. Podemos compararlo con su periodo real que es', T_teo[i] ,'días. Su error relativo es', abs(periodos_r[i]-T_teo[i])/T_teo[i]*100, '%.')
     print('Para el cuerpo', i, ', la excentricidad medida es', epsilons[i],'. Podemos compararla con su excentricidad real que es', epsilons_teo[i] ,'. Su error relativo es', abs(epsilons[i]-epsilons_teo[i])/epsilons_teo[i]*100, '%.')
 
