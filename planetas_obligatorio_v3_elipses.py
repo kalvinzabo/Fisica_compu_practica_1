@@ -18,18 +18,18 @@ t0 = 0
 
     #Constantes físicas
 G = 6.67e-11
-c = 149.6e9
+c = 149.598e9
 
     #Masas (kg)
-M_sol = 1.99e30
-m_mercurio = 3.30e23
-m_venus = 4.87e24
-m_tierra = 5.97e24
-m_marte = 6.42e23
-m_jupiter = 1.898e27
-m_saturno = 5.68e26
-m_urano = 8.68e25
-m_neptuno = 1.02e26
+M_sol = 1.9885e30
+m_mercurio = 3.301e23
+m_venus = 4.8673e24
+m_tierra = 5.9722e24
+m_marte = 6.4169e23
+m_jupiter = 1.89813e27
+m_saturno = 5.6832e26
+m_urano = 8.6811e25
+m_neptuno = 1.02409e26
 masas = np.array([M_sol, m_mercurio, m_venus, m_tierra, m_marte, m_jupiter, m_saturno, m_urano, m_neptuno])
 #Reescalo la masa con reespecto a la masa del sol siendo las nuevas masas m'=m/M_sol
 masas_r = masas/M_sol
@@ -67,11 +67,11 @@ e_sol = 0.
 e_mercurio = 0.206
 e_venus = 0.007
 e_tierra = 0.017
-e_marte = 0.094
-e_jupiter = 0.049
-e_saturno = 0.052
+e_marte = 0.09341233
+e_jupiter = 0.04839266
+e_saturno = 0.05415060
 e_urano = 0.047
-e_neptuno = 0.0086
+e_neptuno = 0.00858587
 epsilons_teo = np.array([e_sol, e_mercurio, e_venus, e_tierra, e_marte, e_jupiter, e_saturno, e_urano, e_neptuno])
 
     #Periodos (días)
