@@ -228,6 +228,22 @@ for i in range(1,cuerpos):
     factor = (2*energia_total_cuerpo*momento_angular_total_cuerpo**2)/(G**2*(M_sol)**2*(masas[i])**3)
     epsilons_energia[i] = np.sqrt(1+factor)
 
+#Comparamos los periodos y las excentricidades calculadas
+    print('\033[1m' + f'Para el cuerpo {i}:' + '\033[0m')
+    print(f'El periodo medido es {periodos_r[i]} días. Podemos compararlo con su periodo real que es {T_teo[i]} días.')
+    print(f'Su error relativo es {abs(periodos_r[i]-T_teo[i])/T_teo[i]*100}%.')
+    print(f'La excentricidad real es {epsilons_teo[i]}.')
+    print(f'La excentricidad medida según la órbita predicha es {epsilons[i]}. Su error relativo respecto a la teórica es {abs(epsilons[i]-epsilons_teo[i])/epsilons_teo[i]*100}%.')
+    if factor < -1:
+        print(f'No se puede calcular para este cuerpo la excentricidad en función de la E total y el L total obtenidos en esta simulación.')
+        print(f'El factor es: {factor}')
+        print()
+        continue 
+    print(f'El factor es: {factor}')
+    print(f'La excentricidad calculada en función de la E total y el L total predichos es {epsilons_energia[i]}. Su error relativo respecto a la teórica es {abs(epsilons_energia[i]-epsilons_teo[i])/epsilons_teo[i]*100}%.')
+    print(f'Podemos comparar las excentricidades medidas y calculadas en la simulación, atendiendo al error relativo que es {abs(epsilons[i]-epsilons_energia[i])/epsilons[i]*100}%.')
+    print()
+
 np.save('resultados/pos_global.npy', pos)
 np.save('resultados/vel_global.npy', vel)
 np.save('resultados/ac_global.npy', a)
