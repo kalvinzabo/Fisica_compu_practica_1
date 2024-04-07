@@ -101,6 +101,7 @@ a = np.zeros((iterations, cuerpos, coordenadas))
 energia_total = np.zeros((iterations))
 energias_cuerpos = np.zeros((iterations,cuerpos))
 momento_angular_total = np.zeros((iterations, coordenadas))
+momento_angular_cuerpos = np.zeros((iterations,cuerpos,coordenadas))
 periodos = np.zeros(cuerpos)
 is_r_disminuyendo = [False]*9    #list of flags to check if each planet has started approaching its starting point (used to calculate the orbit period)
 r_anteriores = [0.]*9     #this one holds the last distance so we can check if it is increasing or decreasing
@@ -137,10 +138,12 @@ def calculo_energia_total(iteracion, pos, vel, masas=masas_r, energias_cuerpos=e
     return energia_total
 
 #Función de cálculo del momento angular total. Calculamos L = m (r x v)
-def calculo_momento_angular_total(pos, vel, masas=masas_r):
+def calculo_momento_angular_total(iteracion, pos, vel, masas=masas_r, mom_ang_cuerpos=momento_angular_cuerpos):
     momento_angular_total = np.zeros(3)
     for i in range(len(masas)):
-        momento_angular_total += masas[i] * np.cross(pos[i], vel[i])
+        mom_ang_cuerpo = masas[i] * np.cross(pos[i], vel[i])
+        momento_angular_total += mom_ang_cuerpo
+        mom_ang_cuerpos[iteracion,i] = mom_ang_cuerpo
     return momento_angular_total
 
 def actualizar_maxima_distancia(num_iteracion : int, planeta:int):
