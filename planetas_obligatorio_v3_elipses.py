@@ -200,22 +200,33 @@ for t in range (iterations-1):
     if t % 10000 == 0:
         print(f'Iteración número {t+1} de {iterations-1}')
 
-#Reescalamos los periodos calculados a los reales y lo mismo con las maximas distancias
+#Reescalamos los periodos, maximas distancias, energias y momentos angulares calculados a los reales
 periodos_r = periodos*(c**3/(G*M_sol))**0.5*1.15741e-5
 maximas_distancias = c*maximas_distancias_r
 
-#Calculamos las excentricidades predichas según la forma de nuestra órbita.
+energias_cuerpos_medias = np.mean(energias_cuerpos, axis=0)
+# energias_cuerpos_stderr = np.std(energias_cuerpos, axis=0)
+
+momentos_angulares_medios = np.mean(momento_angular_cuerpos, axis=0)    #el truco es pensar que el eje que pasas (aqui iteraciones) es el que eliminas. ademas 0 es el eje de las filas (cada fila son 9 cuerpos) y te quedas con una unica fila (de 9 cuerpos)
+modulos_momentos_angulares = np.linalg.norm(momentos_angulares_medios, axis=1)
+# momentos_angulares_stderr = np.std(momento_angular_cuerpos, axis=0)
+
 for i in range(1,cuerpos):
+    # print(f'desviacion tipica de la energia es: {energias_cuerpos_stderr[i]}')
+    # print(f'desviacion tipica del momento es: {momentos_angulares_stderr[i]}')
+
+#Calculamos las excentricidades predichas según la forma de nuestra órbita.
     epsilons[i] = (maximas_distancias_r[i] - perihelios_r[i][0])/(maximas_distancias_r[i] + perihelios_r[i][0])
 
 #Calculamos las excentricidades en relación con la energía
-for i in range(1,cuerpos):
-    energia_total_real = energia_total * (G*(M_sol)**2)/c
-    momento_angular_total_real = momento_angular_total * M_sol * np.sqrt(c*G*M_sol)
-    epsilons_energia[i] = np.sqrt(1+(2*energia_total_real*(momento_angular_total_real)**2)/(G**2*(M_sol)**2*(masas[i])**3))
+    energia_total_cuerpo = energias_cuerpos_medias[i] * M_sol * ((c**(1.5))/(c*np.sqrt(G*M_sol)))**(-2)     #esto está desnormalizando
+#    print(f'energia sin normalizar era: {energias_cuerpos_medias[i]}, desnormalizada es: {energia_total_cuerpo}')
 
-    print('Para el cuerpo', i, ', el periodo medido es', periodos_r[i],'días. Podemos compararlo con su periodo real que es', T_teo[i] ,'días. Su error relativo es', abs(periodos_r[i]-T_teo[i])/T_teo[i]*100, '%.')
-    print('Para el cuerpo', i, ', la excentricidad medida es', epsilons[i],'. Podemos compararla con su excentricidad real que es', epsilons_teo[i] ,'. Su error relativo es', abs(epsilons[i]-epsilons_teo[i])/epsilons_teo[i]*100, '%.')
+    momento_angular_total_cuerpo = modulos_momentos_angulares[i] * M_sol * ((c**(1.5))/(c*np.sqrt(G*M_sol)))**(-1) * c
+#    print(f'momento normalizado era: {momentos_angulares_medios[i]}, modulo {modulos_momentos_angulares[i]}, desnormalizado: {momento_angular_total_cuerpo}')
+    
+    factor = (2*energia_total_cuerpo*momento_angular_total_cuerpo**2)/(G**2*(M_sol)**2*(masas[i])**3)
+    epsilons_energia[i] = np.sqrt(1+factor)
 
 np.save('resultados/pos_global.npy', pos)
 np.save('resultados/vel_global.npy', vel)
