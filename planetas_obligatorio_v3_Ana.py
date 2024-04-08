@@ -195,7 +195,7 @@ np.save('resultados/E_global.npy', energia_total)
 np.save('resultados/L_global.npy', momento_angular_total)
 np.save('resultados/t_global.npy', t)
 
-plot_test_orbits.myplot()
+plot_test_orbits.external_plot()
 
 # for i in range(len(masas)):
 

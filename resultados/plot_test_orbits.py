@@ -4,70 +4,42 @@ import matplotlib.pyplot as plt
 # import matplotlib.animation as anim
 import numpy as np
 
-def myplot():
+def external_plot(center = 0):
     pos = np.load('resultados/pos_global.npy')
-    sunplot(pos)
+    orbitplot(center, pos)
 
-def sunplot(pos):
-    # vel = np.load('vel_global')
-    # a = np.load('ac_global')
+def orbitplot(center : int, pos):
+    if center > 8 or center <= -1:
+        print('error: el argumento debe estar entre 0 y 8')
+        return
+    
+    if center != 0:
+        pos -= pos[:, center, np.newaxis]
     
     fig, axs = plt.subplots(ncols=2, figsize=(20, 20))
 
-    colors = ['gold', 'lightsteelblue', 'orange', 'olivedrab', 'indianred']
-    planet_names = ['Sol', 'Mercurio', 'Venus', 'Tierra', 'Marte']
-    for i in range(1, 5):
-        axs[0].plot(pos[:, i, 0], pos[:, i, 1], label=f'{planet_names[i]}', color=colors[i])
-
-    colors = ['peru', 'moccasin', 'lightcyan', 'royalblue']    
-    planet_names_ext = ['Júpiter','Saturno', 'Urano', 'Neptuno']
-    for i in range(5, 9):
-        axs[1].plot(pos[:, i, 0], pos[:, i, 1], label=f'{planet_names_ext[i-5]}', color=colors[i-5])
-
-    axs[0].set_title('Órbita de los planetas interiores respecto al Sol')
-    axs[1].set_title('Órbita de los planetas exteriores respecto al Sol')
-
-    for ax in axs:
-        ax.scatter(0, 0, color='gold', label='Sol')
-        ax.set_aspect('equal')
-        ax.set_xlabel('Posición X (UA)')
-        ax.set_ylabel('Posición Y (UA)')
-        ax.legend()
-
-    plt.show()
-
-def earthplot(pos):
-    # vel = np.load('vel_global')
-    # a = np.load('ac_global')
-
-    pos -= pos[:, 3, np.newaxis]
-    
-    fig, axs = plt.subplots(ncols=2, figsize=(20, 20))
-
-    colors = ['gold', 'lightsteelblue', 'orange', 'olivedrab', 'indianred']
-    planet_names = ['Sol', 'Mercurio', 'Venus', 'Tierra', 'Marte']
-    for i in range(4,-1,-1):
-        if i == 3:
+    colors = ['gold', 'lightsteelblue', 'orange', 'olivedrab', 'indianred', 'peru', 'moccasin', 'lightcyan', 'royalblue']
+    planet_names = ['Sol', 'Mercurio', 'Venus', 'Tierra', 'Marte', 'Júpiter','Saturno', 'Urano', 'Neptuno']
+    for i in range(8,-1,-1):
+        if i == center:
             continue
-        axs[0].plot(pos[:, i, 0], pos[:, i, 1], label=f'{planet_names[i]}', color=colors[i])
+        if i <= 4:
+            axs[0].plot(pos[:, i, 0], pos[:, i, 1], label=f'{planet_names[i]}', color=colors[i])
+        else:
+            axs[1].plot(pos[:, i, 0], pos[:, i, 1], label=f'{planet_names[i]}', color=colors[i])
 
-    colors = ['peru', 'moccasin', 'lightcyan', 'royalblue']    
-    planet_names_ext = ['Júpiter','Saturno', 'Urano', 'Neptuno']
-    for i in range(5, 9):
-        axs[1].plot(pos[:, i, 0], pos[:, i, 1], label=f'{planet_names_ext[i-5]}', color=colors[i-5])
-
-    axs[0].set_title('Órbita de los planetas interiores y el Sol respecto a la Tierra')
-    axs[1].set_title('Órbita de los planetas exteriores respecto a la Tierra')
+    axs[0].set_title(f'Órbita de los planetas interiores respecto a {planet_names[center]}')
+    axs[1].set_title(f'Órbita de los planetas exteriores respecto a {planet_names[center]}')
 
     for ax in axs:
-        ax.scatter(0, 0, color='olivedrab', label='Tierra')
+        ax.scatter(0, 0, color=colors[center], label=planet_names[center])
         ax.set_aspect('equal')
         ax.set_xlabel('Posición X (UA)')
         ax.set_ylabel('Posición Y (UA)')
-        ax.legend()
+        ax.legend(loc = 'upper right')
 
     plt.show()
-
+    
 if __name__ == '__main__':
     pos = np.load('pos_global.npy')
-    sunplot(pos)
+    orbitplot(3, pos)

@@ -253,7 +253,7 @@ np.save('resultados/t_global.npy', t)
 np.savetxt('resultados/maximas_distancias.txt', maximas_distancias)
 #Save maximum distances of each planet
 
-plot_test_orbits.myplot()
+plot_test_orbits.external_plot()
 
 # for i in range(len(masas)):
 
