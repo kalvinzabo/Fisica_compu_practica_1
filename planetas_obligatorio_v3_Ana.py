@@ -93,7 +93,7 @@ iterations=int(t_limit//h)
 cuerpos = len(masas)
 coordenadas = len(distancias[0])
 
-t = np.linspace(t0,t_limit,iterations)
+time = np.linspace(t0,t_limit,iterations)
 pos = np.zeros((iterations, cuerpos, coordenadas))
 vel = np.zeros((iterations, cuerpos, coordenadas))
 a = np.zeros((iterations, cuerpos, coordenadas))
@@ -204,7 +204,7 @@ np.save('resultados/E_global.npy', energia_total)
 np.save('resultados/energias_cuerpos.npy', energias_cuerpos)
 np.save('resultados/L_global.npy', momento_angular_total)
 np.save('resultados/L_cuerpos.npy', momento_angular_cuerpos)
-np.save('resultados/t_global.npy', t)
+np.save('resultados/t_global.npy', time)
 
 plot_test_orbits.external_plot()
 
