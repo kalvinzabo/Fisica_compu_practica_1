@@ -98,7 +98,9 @@ pos = np.zeros((iterations, cuerpos, coordenadas))
 vel = np.zeros((iterations, cuerpos, coordenadas))
 a = np.zeros((iterations, cuerpos, coordenadas))
 energia_total = np.zeros((iterations))
+energias_cuerpos = np.zeros((iterations,cuerpos))
 momento_angular_total = np.zeros((iterations, coordenadas))
+momento_angular_cuerpos = np.zeros((iterations,cuerpos,coordenadas))
 periodos = np.zeros(cuerpos)
 is_r_disminuyendo = [False]*9    #list of flags to check if each planet has started approaching its starting point (used to calculate the orbit period)
 r_anteriores = [0.]*9     #this one holds the last distance so we can check if it is increasing or decreasing
@@ -116,7 +118,7 @@ def calculo_aceleracion (mass=masas_r, dis=distancias_r):
     return aceleraciones
 
 #Función de cálculo de energía. Calculamos la E cinética y la E potencial y las sumamos
-def calculo_energia_total(pos, vel, masas=masas_r):
+def calculo_energia_total(iteracion, pos, vel, masas=masas_r, energias_cuerpos=energias_cuerpos):
     energia_total = 0
     for i in range(len(masas)):
         energia_cinetica = 0.5 * masas[i] * np.linalg.norm(vel[i])**2
@@ -126,14 +128,18 @@ def calculo_energia_total(pos, vel, masas=masas_r):
                 continue
             r = np.linalg.norm(pos[i] - pos[j])
             energia_potencial -= masas[i] * masas[j] / r
-        energia_total += energia_cinetica + energia_potencial
+        energia_cuerpo = energia_cinetica + energia_potencial
+        energia_total += energia_cuerpo
+        energias_cuerpos[iteracion, i] = energia_cuerpo
     return energia_total
 
 #Función de cálculo del momento angular total. Calculamos L = m (r x v)
-def calculo_momento_angular_total(pos, vel, masas=masas_r):
+def calculo_momento_angular_total(iteracion, pos, vel, masas=masas_r, mom_ang_cuerpos=momento_angular_cuerpos):
     momento_angular_total = np.zeros(3)
     for i in range(len(masas)):
-        momento_angular_total += masas[i] * np.cross(pos[i], vel[i])
+        mom_ang_cuerpo = masas[i] * np.cross(pos[i], vel[i])
+        momento_angular_total += mom_ang_cuerpo
+        mom_ang_cuerpos[iteracion,i] = mom_ang_cuerpo
     return momento_angular_total
 
 #Función de cálculo del periodo. Asigna un periodo a un cuerpo si su distancia con su posición inicial estaba disminuyendo y empieza de nuevo a aumentar.
@@ -161,8 +167,8 @@ def calculo_periodo_orbital(num_iteracion, periodos=periodos, pos_global=pos, st
 pos[0] = distancias_r
 vel[0] = velocidades_r
 a[0] = calculo_aceleracion()
-energia_total[0] = calculo_energia_total(pos[0], vel[0])
-momento_angular_total[0] = calculo_momento_angular_total(pos[0], vel[0])
+energia_total[0] = calculo_energia_total(0, pos[0], vel[0])
+momento_angular_total[0] = calculo_momento_angular_total(0, pos[0], vel[0])
 
 #Algoritmo de Verlet
 for t in range (iterations-1):
@@ -172,8 +178,8 @@ for t in range (iterations-1):
     vel[t+1] = w + h/2*a[t+1]
 
     #Calculo la energía y el momento angular del sistema en la nueva posición.
-    energia_total[t+1] = calculo_energia_total(pos[t+1], vel[t+1])
-    momento_angular_total[t+1] = calculo_momento_angular_total(pos[t+1], vel[t+1])
+    energia_total[t+1] = calculo_energia_total(t+1, pos[t+1], vel[t+1])
+    momento_angular_total[t+1] = calculo_momento_angular_total(t+1, pos[t+1], vel[t+1])
 
     #Compruebo si algún planeta ha completado su órbita.
     calculo_periodo_orbital(t+1)
@@ -182,17 +188,22 @@ for t in range (iterations-1):
     if t % 10000 == 0:
         print(f'Iteración número {t+1} de {iterations-1}')
 
-#Reescalamos los periodos calculados a los 
+#Reescalamos los periodos calculados a los reales
 periodos_r = periodos*(d_tierra[0]**3/(G*M_sol))**0.5*1.15741e-5
 
 for i in range(1,cuerpos):
-    print('Para el cuerpo', i, ', el periodo medido es', periodos_r[i],'días. Podemos compararlo con su periodo real que es', T_teo[i] ,'días. Su error relativo es', abs(periodos_r[i]-T_teo[i])/T_teo[i]*100, '%.')
+    print('\033[1m' + f'Para el cuerpo {i}:' + '\033[0m')
+    print(f'El periodo medido es {periodos_r[i]} días. Podemos compararlo con su periodo real que es {T_teo[i]} días.')
+    print(f'Su error relativo es {abs(periodos_r[i]-T_teo[i])/T_teo[i]*100}%.')
+    print()
 
 np.save('resultados/pos_global.npy', pos)
 np.save('resultados/vel_global.npy', vel)
 np.save('resultados/ac_global.npy', a)
 np.save('resultados/E_global.npy', energia_total)
+np.save('resultados/energias_cuerpos.npy', energias_cuerpos)
 np.save('resultados/L_global.npy', momento_angular_total)
+np.save('resultados/L_cuerpos.npy', momento_angular_cuerpos)
 np.save('resultados/t_global.npy', t)
 
 plot_test_orbits.external_plot()
