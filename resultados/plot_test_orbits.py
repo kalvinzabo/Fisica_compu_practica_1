@@ -3,6 +3,8 @@
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridsp
 import numpy as np
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+from matplotlib.patches import ConnectionPatch
 
 plt.rcParams['text.usetex'] = True
 
@@ -44,10 +46,17 @@ def orbitplot(center : int, pos, e_total, e_ind, l_total, l_ind, t):
     l_modulos = np.linalg.norm(l_ind, axis=2)
     l_modulos_total = np.linalg.norm(l_total, axis=1)
 
+    # Create an inset axes for the energy and the angular momentum plot
+    ax3_inset = inset_axes(axs[2], width=1, height=0.75, loc='upper left', bbox_to_anchor=(1.01, 2), bbox_transform=axs[2].transAxes, borderpad=0)
+    ax4_inset = inset_axes(axs[3], width=1, height=0.75, loc='upper left', bbox_to_anchor=(1.01, -0.08), bbox_transform=axs[3].transAxes, borderpad=0)
+
     for i in range(8,-1,-1):
         
         ax3.plot(t, e_ind[:, i], label=f'{planet_names[i]}', color=colors[i])
         ax4.plot(t, l_modulos[:, i], label=f'{planet_names[i]}', color=colors[i])
+        ax3_inset.plot(t, e_ind[:, i], color=colors[i])
+        ax4_inset.plot(t, l_modulos[:, i], label=f'{planet_names[i]}', color=colors[i])
+
         
         if i == center:
             continue
@@ -81,7 +90,34 @@ def orbitplot(center : int, pos, e_total, e_ind, l_total, l_ind, t):
 
     axs[3].set_xlabel(r'Tiempo (1 $\approx$ 58.1 dias)')
     axs[3].set_ylabel(r'Momento angular \newline $(M_{Sol}\cdot UA^2/(58,1 dias))$')
+
+    ax3_inset.set_xlim(1000, 1100)  # specify the limits for x-axis
+    ax3_inset.set_ylim(-0.0000025, 0.0000005)  # specify the limits for y-axis
+
+    ax4_inset.set_xlim(1000, 1100)  # specify the limits for x-axis
+    ax4_inset.set_ylim(-0.0000015, 0.000005)  # specify the limits for y-axis
     
+    # Draw zoom lines for the energy plot
+    xyA = (1000, -0.0000025)  # coordinates of the lower left corner of the zoomed area in the main plot
+    xyB = (0, 1)  # coordinates of the lower left corner of the inset plot
+    con = ConnectionPatch(xyA=xyA, xyB=xyB, coordsA="data", coordsB="axes fraction", axesA=axs[2], axesB=ax3_inset, color="gainsboro", linewidth =2)
+    axs[2].add_artist(con)
+
+    xyA = (1100, 0.0000005)  # coordinates of the upper right corner of the zoomed area in the main plot
+    xyB = (1, 0)  # coordinates of the upper right corner of the inset plot
+    con = ConnectionPatch(xyA=xyA, xyB=xyB, coordsA="data", coordsB="axes fraction", axesA=axs[2], axesB=ax3_inset, color="gainsboro", linewidth =2)
+    axs[2].add_artist(con)
+
+    # Draw zoom lines for the angular momentum plot
+    xyA = (1000, -0.0000015)  # coordinates of the lower left corner of the zoomed area in the main plot
+    xyB = (0, 0)  # coordinates of the lower left corner of the inset plot
+    con = ConnectionPatch(xyA=xyA, xyB=xyB, coordsA="data", coordsB="axes fraction", axesA=axs[3], axesB=ax4_inset, color="gainsboro", linewidth =2)
+    axs[3].add_artist(con)
+
+    xyA = (1100, 0.000005)  # coordinates of the upper right corner of the zoomed area in the main plot
+    xyB = (1, 1)  # coordinates of the upper right corner of the inset plot
+    con = ConnectionPatch(xyA=xyA, xyB=xyB, coordsA="data", coordsB="axes fraction", axesA=axs[3], axesB=ax4_inset, color="gainsboro", linewidth =2)
+    axs[3].add_artist(con)
 
     plt.show()
     
