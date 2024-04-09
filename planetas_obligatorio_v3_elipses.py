@@ -10,6 +10,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from resultados import plot_test_orbits
+import timeit
 
 # plt.rcParams['text.usetex'] = True
 
@@ -182,6 +183,8 @@ a[0] = calculo_aceleracion()
 energia_total[0] = calculo_energia_total(0, pos[0], vel[0])
 momento_angular_total[0] = calculo_momento_angular_total(0, pos[0], vel[0])
 
+start_time = timeit.default_timer()
+
 #Algoritmo de Verlet
 for t in range (iterations-1):
     w = vel[t] + h/2*a[t]
@@ -199,6 +202,11 @@ for t in range (iterations-1):
 
     if t % 10000 == 0:
         print(f'Iteración número {t+1} de {iterations-1}')
+
+end_time = timeit.default_timer()
+execution_time = end_time - start_time
+
+print(f'Finished simulating in {execution_time} time')
 
 #Reescalamos los periodos, maximas distancias, energias y momentos angulares calculados a los reales
 periodos_r = periodos*(c**3/(G*M_sol))**0.5*1.15741e-5
