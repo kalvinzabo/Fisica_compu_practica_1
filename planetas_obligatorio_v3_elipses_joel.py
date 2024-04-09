@@ -8,9 +8,8 @@
 
 #Librerias
 import numpy as np
-from scipy.optimize import curve_fit
-import matplotlib.pyplot as plt
-from resultados import plot_test_orbits
+# import matplotlib.pyplot as plt
+# from resultados import plot_test_orbits
 import timeit
 
 # plt.rcParams['text.usetex'] = True
@@ -110,8 +109,6 @@ r_anteriores = [0.]*9     #this one holds the last distance so we can check if i
 maximas_distancias_r = np.zeros(cuerpos)
 epsilons = np.zeros(cuerpos)
 epsilons_energia = np.zeros(cuerpos)
-epsilons_fit = np.zeros(cuerpos)
-var_epsilons_fit = np.zeros(cuerpos)
 
 #Bloque de funciones.
 #Función de cálculo de aceleraciones. Las calculamos de manera más sencilla debido al reescalamiento que hemos hecho a las masas, distancias y tiempos
@@ -150,7 +147,6 @@ def calculo_momento_angular_total(iteracion, pos, vel, masas=masas_r, mom_ang_cu
         mom_ang_cuerpos[iteracion,i] = mom_ang_cuerpo
     return momento_angular_total
 
-#Función para calcular el afelio
 def actualizar_maxima_distancia(num_iteracion : int, planeta:int):
     global maximas_distancias_r
     r = np.linalg.norm(pos[num_iteracion, planeta])
@@ -179,10 +175,6 @@ def calculo_periodo_orbital(num_iteracion, periodos=periodos, pos_global=pos, st
             continue
         
         r_anteriores[j] = r     #after entering the first case (or none in the first half of the orbit), update last distance
-
-#Función de la elipse para hacer curve_fit
-def ellipse(x,a,b):
-    return b * np.sqrt(1-((x)/a)**2)
 
 #Introduzco las posiciones, velocidades, aceleraciones, la energía y el momento angular iniciales en los arrays que dependen del tiempo
 pos[0] = perihelios_r
@@ -244,53 +236,34 @@ for i in range(1,cuerpos):
     factor = (2*energia_total_cuerpo*momento_angular_total_cuerpo**2)/(G**2*(M_sol)**2*(masas[i])**3)
     epsilons_energia[i] = np.sqrt(1+factor)
 
-#Calculamos las excentricidades haciendo curve_fit
-    x = pos[:,i,0]
-    y = pos[:,i,1]
-
-    x_centered = x - np.mean(x)
-    y_centered = y - np.mean(y)
-
-    a_init = np.max(np.sqrt(x_centered**2 + y_centered**2))
-    b_init = np.max(np.abs(y_centered))
-
-    params, params_covariance = curve_fit(ellipse, x_centered, y_centered, p0=[a_init,b_init])
-    a_opt, b_opt = params
-    print(a_opt,b_opt)
-    std_devs = np.sqrt(np.diag(params_covariance))
-    std_dev_a, std_dev_b = std_devs
-
-    epsilons_fit[i] = np.sqrt(1 - (b_opt/a_opt)**2)
-    var_epsilons_fit[i] = np.sqrt((b_opt**2 / (a_opt**3 * epsilons_fit[i]) * std_dev_a)**2 + (-b_opt / (a_opt * epsilons_fit[i]) * std_dev_b)**2)
-
 #Comparamos los periodos y las excentricidades calculadas
     print('\033[1m' + f'Para el cuerpo {i}:' + '\033[0m')
     print(f'El periodo medido es {periodos_r[i]} días. Podemos compararlo con su periodo real que es {T_teo[i]} días.')
     print(f'Su error relativo es {abs(periodos_r[i]-T_teo[i])/T_teo[i]*100}%.')
     print(f'La excentricidad real es {epsilons_teo[i]}.')
     print(f'La excentricidad medida según la órbita predicha es {epsilons[i]}. Su error relativo respecto a la teórica es {abs(epsilons[i]-epsilons_teo[i])/epsilons_teo[i]*100}%.')
-    print(f'La excentricidad obtenida por el ajuste de mínimos cuadrados es {epsilons_fit[i]} \pm {var_epsilons_fit[i]}. Su error relativo respecto a la teórica es {abs(epsilons_fit[i]-epsilons_teo[i])/epsilons_teo[i]*100}%.')
-    print(f'El factor es: {factor}')
     if factor < -1:
         print(f'No se puede calcular para este cuerpo la excentricidad en función de la E total y el L total obtenidos en esta simulación.')
+        print(f'El factor es: {factor}')
         print()
         continue 
+    print(f'El factor es: {factor}')
     print(f'La excentricidad calculada en función de la E total y el L total predichos es {epsilons_energia[i]}. Su error relativo respecto a la teórica es {abs(epsilons_energia[i]-epsilons_teo[i])/epsilons_teo[i]*100}%.')
     print(f'Podemos comparar las excentricidades medidas y calculadas en la simulación, atendiendo al error relativo que es {abs(epsilons[i]-epsilons_energia[i])/epsilons[i]*100}%.')
     print()
 
-np.save('resultados/pos_global.npy', pos)
-np.save('resultados/vel_global.npy', vel)
-np.save('resultados/ac_global.npy', a)
-np.save('resultados/E_global.npy', energia_total)
-np.save('resultados/energias_cuerpos.npy', energias_cuerpos)
-np.save('resultados/L_global.npy', momento_angular_total)
-np.save('resultados/L_cuerpos.npy', momento_angular_cuerpos)
-np.save('resultados/t_global.npy', time)
-np.savetxt('resultados/maximas_distancias.txt', maximas_distancias)
+np.save('pos_global.npy', pos)
+np.save('vel_global.npy', vel)
+np.save('ac_global.npy', a)
+np.save('E_global.npy', energia_total)
+np.save('energias_cuerpos.npy', energias_cuerpos)
+np.save('L_global.npy', momento_angular_total)
+np.save('L_cuerpos.npy', momento_angular_cuerpos)
+np.save('t_global.npy', time)
+np.savetxt('maximas_distancias.txt', maximas_distancias)
 #Save maximum distances of each planet
 
-plot_test_orbits.external_plot()
+# plot_test_orbits.external_plot()
 
 # for i in range(len(masas)):
 
