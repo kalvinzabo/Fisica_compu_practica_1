@@ -110,6 +110,7 @@ r_anteriores = [0.]*9     #this one holds the last distance so we can check if i
 maximas_distancias_r = np.zeros(cuerpos)
 epsilons = np.zeros(cuerpos)
 epsilons_energia = np.zeros(cuerpos)
+epsilons_energia_0 = np.zeros(cuerpos)
 epsilons_fit = np.zeros(cuerpos)
 var_epsilons_fit = np.zeros(cuerpos)
 
@@ -225,24 +226,27 @@ energias_cuerpos_medias = np.mean(energias_cuerpos, axis=0)
 
 momentos_angulares_medios = np.mean(momento_angular_cuerpos, axis=0)    #el truco es pensar que el eje que pasas (aqui iteraciones) es el que eliminas. ademas 0 es el eje de las filas (cada fila son 9 cuerpos) y te quedas con una unica fila (de 9 cuerpos)
 modulos_momentos_angulares = np.linalg.norm(momentos_angulares_medios, axis=1)
+modulos_momentos_angulares_0 = np.linalg.norm(momento_angular_cuerpos[0], axis=1)
 # momentos_angulares_stderr = np.std(momento_angular_cuerpos, axis=0)
 
 for i in range(1,cuerpos):
-    # print(f'desviacion tipica de la energia es: {energias_cuerpos_stderr[i]}')
-    # print(f'desviacion tipica del momento es: {momentos_angulares_stderr[i]}')
 
 #Calculamos las excentricidades predichas según la forma de nuestra órbita.
     epsilons[i] = (maximas_distancias_r[i] - perihelios_r[i][0])/(maximas_distancias_r[i] + perihelios_r[i][0])
 
 #Calculamos las excentricidades en relación con la energía
     energia_total_cuerpo = energias_cuerpos_medias[i] * M_sol * ((c**(1.5))/(c*np.sqrt(G*M_sol)))**(-2)     #esto está desnormalizando
+    energia_0_cuerpo = energias_cuerpos[0,i] * M_sol * ((c**(1.5))/(c*np.sqrt(G*M_sol)))**(-2)     #esto está desnormalizando
 #    print(f'energia sin normalizar era: {energias_cuerpos_medias[i]}, desnormalizada es: {energia_total_cuerpo}')
 
     momento_angular_total_cuerpo = modulos_momentos_angulares[i] * M_sol * ((c**(1.5))/(c*np.sqrt(G*M_sol)))**(-1) * c
+    momento_angular_0_cuerpo = modulos_momentos_angulares_0[i] * M_sol * ((c**(1.5))/(c*np.sqrt(G*M_sol)))**(-1) * c
 #    print(f'momento normalizado era: {momentos_angulares_medios[i]}, modulo {modulos_momentos_angulares[i]}, desnormalizado: {momento_angular_total_cuerpo}')
     
     factor = (2*energia_total_cuerpo*momento_angular_total_cuerpo**2)/(G**2*(M_sol)**2*(masas[i])**3)
+    factor_0 = (2*energia_0_cuerpo*momento_angular_0_cuerpo**2)/(G**2*(M_sol)**2*(masas[i])**3)
     epsilons_energia[i] = np.sqrt(1+factor)
+    epsilons_energia_0[i] = np.sqrt(1+factor_0)
 
 #Calculamos las excentricidades haciendo curve_fit
     x = pos[:,i,0]
@@ -270,6 +274,8 @@ for i in range(1,cuerpos):
     print(f'La excentricidad real es {epsilons_teo[i]}.')
     print(f'La excentricidad medida según la órbita predicha es {epsilons[i]}. Su error relativo respecto a la teórica es {abs(epsilons[i]-epsilons_teo[i])/epsilons_teo[i]*100}%.')
     print(f'La excentricidad obtenida por el ajuste de mínimos cuadrados es {epsilons_fit[i]} \pm {var_epsilons_fit[i]}. Su error relativo respecto a la teórica es {abs(epsilons_fit[i]-epsilons_teo[i])/epsilons_teo[i]*100}%.')
+    print(f'La excentricidad calculada en función de la E_0 total y el L_0 total es {epsilons_energia_0[i]}. Su error relativo respecto a la teórica es {abs(epsilons_energia_0[i]-epsilons_teo[i])/epsilons_teo[i]*100}%.')
+    print(f'Podemos comparar las excentricidades medidas e inicialmente calculadas en la simulación, atendiendo al error relativo que es {abs(epsilons[i]-epsilons_energia_0[i])/epsilons_energia_0[i]*100}%.')
     print(f'El factor es: {factor}')
     if factor < -1:
         print(f'No se puede calcular para este cuerpo la excentricidad en función de la E total y el L total obtenidos en esta simulación.')
